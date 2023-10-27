@@ -32,7 +32,17 @@ class PicFS:
         key = (image_path, data_type, mtime)
         if key in self.data_cache:
             return self.data_cache[key]
-        data = self.load_image(image_path, data_type)
+        
+        data = None
+        get_image_success = False
+        while not get_image_success:
+            try:
+                data = self.load_image(image_path, data_type)
+                get_image_success = True
+            except:
+                print("Error getting image. Sleeping 1 sec and repeating.")
+                time.sleep(1)
+        
         self.data_cache[key] = data
         return data
     
